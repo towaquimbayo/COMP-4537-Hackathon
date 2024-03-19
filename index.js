@@ -1,19 +1,27 @@
-const http = require('http');
-const url = require('url');
+const http = require("http");
+const url = require("url");
+var fs = require("fs");
 
 // Define your routes and their corresponding handlers
 const routes = {
-  '/': (req, res) => {
-    res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.end('Welcome to the API');
+  "/": (req, res) => {
+    fs.readFile("./public/index.html", (err, data) => {
+      if (err) {
+        res.writeHead(500, { "Content-Type": "text/plain" });
+        res.end("Internal Server Error");
+        return;
+      }
+      res.writeHead(200, { "Content-Type": "text/html" });
+      res.end(data);
+    });
   },
-  '/hello': (req, res) => {
-    res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.end('Hello, World!');
+  "/hello": (req, res) => {
+    res.writeHead(200, { "Content-Type": "text/plain" });
+    res.end("Hello, World!");
   },
-  '/about': (req, res) => {
-    res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.end('This is a barebone API made in Node.js');
+  "/about": (req, res) => {
+    res.writeHead(200, { "Content-Type": "text/plain" });
+    res.end("This is a barebone API made in Node.js");
   },
   // Add more routes as needed
 };
@@ -21,12 +29,15 @@ const routes = {
 // Create a server
 const server = http.createServer((req, res) => {
   // Set CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, OPTIONS"
+  );
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
   // Check if it's a preflight request (OPTIONS)
-  if (req.method === 'OPTIONS') {
+  if (req.method === "OPTIONS") {
     res.writeHead(200);
     res.end();
     return;
@@ -43,8 +54,8 @@ const server = http.createServer((req, res) => {
     handler(req, res);
   } else {
     // Route not found
-    res.writeHead(404, { 'Content-Type': 'text/plain' });
-    res.end('Route not found');
+    res.writeHead(404, { "Content-Type": "text/plain" });
+    res.end("Route not found");
   }
 });
 
